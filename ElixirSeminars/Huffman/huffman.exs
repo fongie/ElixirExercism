@@ -22,26 +22,49 @@ defmodule Huffman do
   end
 
   def tree(sample) do
-    # To implement...
     sample
     |> freq
     |> create_min_prio_queue
-    #|> build_tree
+    |> build_tree
   end
 
   # Takes a min priority queue and turns it into a Huffman tree, using the huffman greedy algorithm
   def build_tree(min_prio_queue) when length(min_prio_queue) > 1 do
     [{char1, freq1} | t1] = min_prio_queue 
     [{char2, freq2} | t2] = t1
-    newNode = {{char1,char2}, freq1+freq2}
-    # Maybe I have to sort first?? The created node might not (probably isnt) lower frequency than the highest occuring character!!
-    build_tree(t2 ++ [newNode])
+
+    newNode = {{{char1,freq1},{char2,freq2}}, freq1+freq2}
+              |> insert_into_queue(t2)
+              |> build_tree
+
   end
-
-  #TODO IM WORKING ON THIS FUNCTION, CHECK WIKIPEDIA FOR THE ACTUAL ALGORITHM
-
   def build_tree(min_prio_queue) do
     min_prio_queue
+  end
+
+  # Takes a node, inserts into given min prio queue, and returns the queue
+  def insert_into_queue(nod, []) do
+    [nod]
+  end
+  def insert_into_queue(nod, queue) do
+    i = find_index(nod, queue, 0)
+    queue
+    |> List.insert_at(i,nod)
+  end
+
+  # Find which index to insert node at in min prio queue
+  def find_index(nod,queue,n) when n+1 >= length(queue) do
+    n+1
+  end
+  def find_index(nod, queue, n) do
+    {_, freq} = nod
+    {_, nextfreq} = Enum.at(queue, n+1)
+    cond do
+      freq > nextfreq ->
+        find_index(nod, queue, n+1)
+      freq <= nextfreq ->
+        n+1
+    end
   end
 
   # Takes a list of tuples [{"c", i},...] where c is a single character and i the frequency, and orders this so the HEAD is the least occuring character.
