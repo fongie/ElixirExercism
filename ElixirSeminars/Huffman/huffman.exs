@@ -23,6 +23,17 @@ defmodule Huffman do
 
   def encode_table(tree) do
     # To implement...
+    dfs(tree(sample()),[])
+  end
+
+  def dfs({:node, left, right, freq}, path) do
+    dfs(left, path ++ [0])
+    dfs(right, path ++ [1])
+  end
+
+  def dfs({:leaf, char, _}, path) do
+    IO.puts(char)
+    IO.puts(path)
   end
 
   def tree(sample) do
@@ -31,6 +42,7 @@ defmodule Huffman do
     |> Enum.map(fn {char,freq} -> {:leaf, char, freq} end) #make all chars in prio queue leafs
     |> create_min_prio_queue
     |> build_tree
+    |> Enum.at(0)
   end
 
   # Takes a min priority queue and turns it into a Huffman tree, using the huffman greedy algorithm
