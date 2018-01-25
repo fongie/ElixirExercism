@@ -7,7 +7,7 @@ defmodule Huffman do
     no punctuation symbols the frequency will of course not
     represent english but it is probably not that far off"
   end
-  def text do 
+  def text do
     "this is something that we should encode"
   end
 
@@ -21,25 +21,42 @@ defmodule Huffman do
     decode(seq, decode)
   end
 
+  def encode_table(tree) do
+    # To implement...
+  end
+
   def tree(sample) do
     sample
     |> freq
+    |> Enum.map(fn {char,freq} -> {:leaf, char, freq} end) #make all chars in prio queue leafs
     |> create_min_prio_queue
     |> build_tree
   end
 
   # Takes a min priority queue and turns it into a Huffman tree, using the huffman greedy algorithm
   def build_tree(min_prio_queue) when length(min_prio_queue) > 1 do
-    [{char1, freq1} | t1] = min_prio_queue 
-    [{char2, freq2} | t2] = t1
+    [n1 | t1] = min_prio_queue
+    [n2 | t2] = t1
 
-    newNode = {{{char1,freq1},{char2,freq2}}, freq1+freq2}
-              |> insert_into_queue(t2)
-              |> build_tree
-
+    create_node(n1,n2)
+    |> insert_into_queue(t2)
+    |> build_tree
   end
   def build_tree(min_prio_queue) do
     min_prio_queue
+  end
+
+  def create_node({:leaf, value1, freq1},{:node, left2, right2, freq2}) do
+    {:node, {:leaf, value1, freq1},{:node, left2, right2, freq2}, freq1+freq2}
+  end
+  def create_node({:node, left1, right1, freq1},{:leaf, value2, freq2}) do
+    {:node, {:node, left1, right1, freq1},{:leaf, value2, freq2}, freq1+freq2}
+  end
+  def create_node({:node, left1, right1, freq1},{:node, left2, right2, freq2}) do
+    {:node, {:node, left1, right1, freq1},{:node, left2, right2, freq2}, freq1+freq2}
+  end
+  def create_node({:leaf, value1, freq1},{:leaf, value2, freq2}) do
+    {:node, {:leaf, value1, freq1}, {:leaf, value2, freq2}, freq1+freq2}
   end
 
   # Takes a node, inserts into given min prio queue, and returns the queue
@@ -57,8 +74,22 @@ defmodule Huffman do
     n+1
   end
   def find_index(nod, queue, n) do
-    {_, freq} = nod
-    {_, nextfreq} = Enum.at(queue, n+1)
+    nextNod = Enum.at(queue, n+1)
+
+    case elem(nod,0) do
+      :leaf ->
+        {_,_, freq} = nod
+      :node ->
+        {_,_,_,freq} = nod
+    end
+
+    case elem(nextNod,0) do
+      :leaf ->
+        {_,_, nextfreq} = nextNod
+      :node ->
+        {_,_,_,nextfreq} = nextNod
+    end
+
     cond do
       freq > nextfreq ->
         find_index(nod, queue, n+1)
@@ -70,12 +101,9 @@ defmodule Huffman do
   # Takes a list of tuples [{"c", i},...] where c is a single character and i the frequency, and orders this so the HEAD is the least occuring character.
   def create_min_prio_queue(frequency_list) do
     frequency_list
-    |> Enum.sort(fn ({_, i1}, {_,i2}) -> i1 <= i2 end)
+    |> Enum.sort(fn ({_,_, i1}, {_,_,i2}) -> i1 <= i2 end)
   end
 
-  def encode_table(tree) do
-    # To implement...
-  end
 
   def decode_table(tree) do
     # To implement...
@@ -90,7 +118,7 @@ defmodule Huffman do
   end
 
   def freq(sample) do
-    sample 
+    sample
     |> String.codepoints
     |> freq(%{})
   end
