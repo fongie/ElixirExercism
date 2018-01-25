@@ -22,18 +22,16 @@ defmodule Huffman do
   end
 
   def encode_table(tree) do
-    # To implement...
-    dfs(tree(sample()),[])
+    dfs(tree, [])
   end
 
   def dfs({:node, left, right, freq}, path) do
-    dfs(left, path ++ [0])
-    dfs(right, path ++ [1])
+    [dfs(left, path ++ [0]) | [dfs(right, path ++ [1]) | []]]
+    |> List.flatten
   end
 
   def dfs({:leaf, char, _}, path) do
-    IO.puts(char)
-    IO.puts(path)
+    {char, path}
   end
 
   def tree(sample) do
@@ -103,9 +101,9 @@ defmodule Huffman do
     end
 
     cond do
-      freq > nextfreq ->
+      freq >= nextfreq ->
         find_index(nod, queue, n+1)
-      freq <= nextfreq ->
+      freq < nextfreq ->
         n+1
     end
   end

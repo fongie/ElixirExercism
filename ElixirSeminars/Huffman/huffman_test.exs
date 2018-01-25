@@ -47,7 +47,7 @@ defmodule HuffmanTest do
 
   #@tag :pending
   test "insert into prio queue on same value" do
-    assert Huffman.insert_into_queue({:leaf, "a",2},[{:leaf, "a",1},{:leaf, "b",2},{:leaf, "f",4},{:leaf, "c",7}]) == [{:leaf, "a",1},{:leaf, "a",2},{:leaf, "b",2},{:leaf, "f",4},{:leaf, "c",7}]
+    assert Huffman.insert_into_queue({:leaf, "a",2},[{:leaf, "a",1},{:leaf, "b",2},{:leaf, "f",4},{:leaf, "c",7}]) == [{:leaf, "a",1},{:leaf, "b",2},{:leaf, "a",2},{:leaf, "f",4},{:leaf, "c",7}]
   end
 
   #@tag :pending
@@ -67,7 +67,7 @@ defmodule HuffmanTest do
 
   #@tag :pending
   test "building a tree with odd number leafs" do
-    assert Huffman.build_tree([{:leaf,"a",1},{:leaf,"b",2},{:leaf,"c",3}]) == [{:node, {:leaf,"c", 3}, {:node, {:leaf,"a", 1}, {:leaf,"b", 2}, 3}, 6}]
+    assert Huffman.build_tree([{:leaf,"a",1},{:leaf,"b",2},{:leaf,"c",3}]) == [{:node,{:leaf,"c",3},{:node,{:leaf,"a",1},{:leaf,"b",2},3},6}]
   end
 
   #@tag :pending
@@ -82,36 +82,17 @@ defmodule HuffmanTest do
 
   #@tag :pending
   test "tree from simple sample" do
-    assert Huffman.tree("aabbbc") == [{:node, {:leaf, "b",3},{:node, {:leaf, "c",1},{:leaf, "a",2},3},6}]
+    assert Huffman.tree("aabbbc") == {:node, {:leaf, "b",3},{:node, {:leaf, "c",1},{:leaf, "a",2},3},6}
   end
 
   #@tag :pending
-  test "tree from given sample" do
-    assert Huffman.tree(Huffman.sample()) == [{:node,
-              {:node,
-               {:node, {:node, {:leaf, "a", 13}, {:leaf, "n", 13}, 26},
-                {:node, {:leaf, "s", 13}, {:leaf, "o", 15}, 28}, 54},
-               {:leaf, " ", 62}, 116},
-              {:node,
-               {:node,
-                {:node,
-                 {:node, {:node, {:leaf, "\n", 4}, {:leaf, "d", 4}, 8},
-                  {:node, {:node, {:leaf, "g", 2}, {:leaf, "q", 2}, 4},
-                   {:node, {:node, {:leaf, "j", 1}, {:leaf, "k", 1}, 2},
-                    {:node, {:leaf, "v", 1}, {:leaf, "z", 1}, 2}, 4}, 8}, 16},
-                 {:leaf, "l", 17}, 33},
-                {:node, {:node, {:leaf, "h", 9}, {:leaf, "w", 9}, 18},
-                 {:node,
-                  {:node, {:node, {:leaf, "x", 2}, {:leaf, "m", 3}, 5},
-                   {:leaf, "c", 5}, 10}, {:leaf, "r", 10}, 20}, 38}, 71},
-               {:node,
-                {:node, {:leaf, "t", 20},
-                 {:node, {:leaf, "u", 10},
-                  {:node, {:leaf, "y", 5}, {:leaf, "f", 6}, 11}, 21}, 41},
-                {:node,
-                 {:node, {:leaf, "i", 11},
-                  {:node, {:leaf, "p", 6}, {:leaf, "b", 7}, 13}, 24},
-                 {:leaf, "e", 24}, 48}, 89}, 160}, 276}]
+  test "encoding simple tree" do
+    assert Huffman.encode_table({:node, {:leaf,"d", 4}, {:node,{:leaf,"c", 3}, {:node, {:leaf,"z", 1}, {:leaf,"b", 2}, 3}, 6}, 10}) == [{"d",[0]},{"c",[1,0]},{"z",[1,1,0]},{"b",[1,1,1]}]
+  end
+
+  @tag :pending
+  test "encoding sample tree" do
+    assert Huffman.encode_table(Huffman.tree(Huffman.sample())) == :test
   end
 end
 
