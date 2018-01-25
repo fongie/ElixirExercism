@@ -21,19 +21,59 @@ defmodule Huffman do
     decode(seq, decode)
   end
 
-  def encode_table(tree) do
-    dfs(tree, [])
+  def decode_table(tree) do
+    encode_table(tree)
   end
 
+  # Decode given sequence using given encoding table
+  def decode([], _), do: []
+  def decode(seq, table) do
+    {char, rest} = decode_char(seq, 1, table)
+    [char | decode(rest, table)]
+    |> to_string
+  end
+
+  def decode_char(seq, n, table) do
+    {code, rest} = Enum.split(seq, n)
+
+    case List.keyfind(table, code, 1) do
+      {char, ^code} ->
+        {char, rest}
+      nil ->
+        decode_char(seq, n+1, table)
+    end
+  end
+
+  # Encode given text using a given huffman encoding table
+  def encode(text, table) do
+    text
+    |> String.codepoints
+    |> Enum.map(fn x -> find_in_table(x,table) end)
+    |> List.flatten
+  end
+  def find_in_table(char, table) do
+    {_, list} = table
+                |> Enum.find(fn {c, _} -> c == char end)
+
+    list
+  end
+
+  # Create encoding table for huffman encoding
+  def encode_table(tree) do
+    tree
+    |> dfs([])
+  end
+
+  # Using depth-first-search to traverse tree and pick up the characters and their paths
   def dfs({:node, left, right, freq}, path) do
     [dfs(left, path ++ [0]) | [dfs(right, path ++ [1]) | []]]
     |> List.flatten
   end
-
   def dfs({:leaf, char, _}, path) do
     {char, path}
   end
 
+  # Create a huffman tree from a text
   def tree(sample) do
     sample
     |> freq
@@ -114,18 +154,6 @@ defmodule Huffman do
     |> Enum.sort(fn ({_,_, i1}, {_,_,i2}) -> i1 <= i2 end)
   end
 
-
-  def decode_table(tree) do
-    # To implement...
-  end
-
-  def encode(text, table) do
-    # To implement...
-  end
-
-  def decode(seq, tree) do
-    # To implement...
-  end
 
   def freq(sample) do
     sample

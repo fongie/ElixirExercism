@@ -91,8 +91,18 @@ defmodule HuffmanTest do
   end
 
   @tag :pending
-  test "encoding sample tree" do
+  test "encoding table for sample tree" do
     assert Huffman.encode_table(Huffman.tree(Huffman.sample())) == :test
+  end
+
+  #@tag :pending
+  test "encoding 'abbccc'" do
+    assert Huffman.encode("abbccc", Huffman.encode_table(Huffman.tree("abbccc"))) == [1,0,1,1,1,1,0,0,0]
+  end
+
+  #@tag :pending
+  test "decoding 'abbccc'" do
+    assert Huffman.decode([1,0,1,1,1,1,0,0,0], Huffman.encode_table(Huffman.tree("abbccc"))) == "abbccc"
   end
 end
 
