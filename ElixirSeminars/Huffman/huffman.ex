@@ -155,6 +155,7 @@ defmodule Huffman do
   end
 
 
+  # Return a list tuples with each character present, and its frequency
   def freq(sample) do
     sample
     |> String.codepoints
@@ -168,5 +169,18 @@ defmodule Huffman do
     acc = acc
           |> Map.update(char, 1, &(&1 +1)) #updates map, checks for key, if key not preset inserts 1, if present updates the value by incrementing it by 1
     freq(rest, acc)
+  end
+
+  def read(file, n) do
+    {:ok, file} = File.open(file, [:read])
+    binary = IO.read(file, n)
+    File.close(file)
+
+    case :unicode.characters_to_list(binary, :utf8) do
+      {:incomplete, list, _} ->
+        list;
+      list ->
+        list
+    end
   end
 end
