@@ -54,7 +54,6 @@ defmodule Huffman do
   def find_in_table(char, table) do
     {_, list} = table
                 |> Enum.find(fn {c, _} -> c == char end)
-
     list
   end
 
@@ -65,6 +64,7 @@ defmodule Huffman do
   end
 
   # Using depth-first-search to traverse tree and pick up the characters and their paths
+  # Optimization from seminar: Add in front of path (1 | path) and reverse at end instead of append
   def dfs({:node, left, right, freq}, path) do
     [dfs(left, path ++ [0]) | [dfs(right, path ++ [1]) | []]]
     |> List.flatten
@@ -85,11 +85,10 @@ defmodule Huffman do
 
   # Takes a min priority queue and turns it into a Huffman tree, using the huffman greedy algorithm
   def build_tree(min_prio_queue) when length(min_prio_queue) > 1 do
-    [n1 | t1] = min_prio_queue
-    [n2 | t2] = t1
+    [n1,n2 | t] = min_prio_queue
 
     create_node(n1,n2)
-    |> insert_into_queue(t2)
+    |> insert_into_queue(t)
     |> build_tree
   end
   def build_tree(min_prio_queue) do
