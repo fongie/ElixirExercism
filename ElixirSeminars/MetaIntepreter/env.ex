@@ -9,10 +9,10 @@ defmodule Env do
   end
 
   # Find id in environment, return {id, struct} if found or nil
-  def lookup(id, []) do
+  def lookup(_, []) do
     nil
   end
-  def lookup(id, [{id, struct} | rest]) do
+  def lookup(id, [{id, struct} | _]) do
     {id, struct}
   end
   def lookup(id, [{_, _} | rest]) do

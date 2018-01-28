@@ -1,5 +1,4 @@
-Code.load_file("env.ex", __DIR__)
-
+# Code.load_file("env.ex", __DIR__)
 ExUnit.start
 ExUnit.configure exclude: :pending, trace: true
 
