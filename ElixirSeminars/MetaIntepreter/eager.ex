@@ -3,7 +3,6 @@ defmodule Eager do
   # as {:var, b} (this is the variable named b)
   # this termin {:a, {x, :b}} would then translate to:
   # {{:atm, a}, {{:var, x}, {:atm, b}}}
-  #
 
   # Pattern matching
   def eval_match({:atm, id}, id, env) do
@@ -19,20 +18,17 @@ defmodule Eager do
         {:ok, [{id, struct} | env]}
     end
   end
-
   def eval_match({:cons, p1, p2}, {:cons, {_, struct1}, {_, struct2}}, env) do
     case eval_match(p1, struct1, env) do
       :fail ->
-        :fail
-      {:ok, env} ->
-        eval_match(p2, struct2, env)
+        :fail #var already bound in env
+      {:ok, env} -> #var not bound, extended env was returned - now check nr 2
+        eval_match(p2, struct2, env) #this is returned at end, shows fail if already bound, proper extended env if not
     end
   end
-
-  def eval_match(_,_,_) do
+  def eval_match(_,_,_) do #nothing matched, return fail
     :fail
   end
-
 
   # Evaluating expressions
   def eval_expr({:atm, id}, _) do
