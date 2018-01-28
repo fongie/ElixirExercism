@@ -27,6 +27,8 @@ defmodule Env do
     newenv = removeOne(id, env, [])
     remove(rest, newenv)
   end
+  def remove(nil, _) do
+  end
   def removeOne(id, [{id,_} | rest], newenv) do
     removeOne(id, rest, newenv)
   end

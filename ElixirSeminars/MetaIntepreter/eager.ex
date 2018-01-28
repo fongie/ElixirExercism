@@ -3,6 +3,51 @@ defmodule Eager do
   # as {:var, b} (this is the variable named b)
   # this termin {:a, {x, :b}} would then translate to:
   # {{:atm, a}, {{:var, x}, {:atm, b}}}
+  #
+
+  # Sequence evaluation
+
+  def eval(sequence) do
+    eval_seq(sequence, [])
+  end
+
+  def eval_seq([expression], env) do
+    eval_expr(expression, env)
+  end
+
+  def eval_seq([{:match, pattern, exp}| rest], env) do
+    # IO.inspect env
+    # IO.inspect eval_expr(exp, env)
+    case eval_expr(exp, env) do
+      {:ok, struct} ->
+        vars = extract_vars(pattern)
+        env = Env.remove(vars, env)
+        # IO.inspect eval_match(pattern, struct, env)
+        case eval_match(pattern, struct, env) do
+          :fail ->
+            :error
+          {:ok, env} ->
+            eval_seq(rest, env)
+        end
+      {struct1, struct2} ->
+        vars = extract_vars(pattern)
+        env = Env.remove(vars, env)
+        # IO.inspect eval_match(pattern, {struct1, struct2}, env)
+        # TODO: FUNCTION IS FAILING HERE ON y = {x,:b} IN SEQUENCE, ARE MY FUNCS EQUIPPED TO HANDLE {x,y} DATA STRUCTURES?
+        case eval_match(pattern, {struct1, struct2}, env) do
+          :fail ->
+            :error
+          {:ok, env} ->
+            eval_seq(rest, env)
+        end
+    end
+  end
+
+  def extract_vars({:var, id}) do
+    [id]
+  end
+  def extract_vars(_) do
+  end
 
   # Pattern matching
   def eval_match({:atm, id}, id, env) do
