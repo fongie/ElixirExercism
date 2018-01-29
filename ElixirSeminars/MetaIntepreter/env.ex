@@ -1,4 +1,17 @@
 defmodule Env do
+  @doc """
+  Handles the environment (binding of variables to data structures)
+  """
+
+  def find_in_env(_, []) do
+    :error
+  end
+  def find_in_env(id, [{id, struct} | _]) do
+    {:ok, struct}
+  end
+  def find_in_env(id, [_ | rest]) do
+    find_in_env(id, rest)
+  end
 
   def new() do
     []
