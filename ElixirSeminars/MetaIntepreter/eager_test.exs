@@ -82,7 +82,7 @@ defmodule EagerTest do
   end
 
   #HUR SKA DENNA FUNKA?
-  @tag :pending
+  #@tag :pending
   test "match var to construct" do
     assert Eager.eval_match({:var, :y}, {:cons, {:atm, :x}, {:atm, :b}}, []) == {:ok, [{:y, {:x, :b}}]}
   end
