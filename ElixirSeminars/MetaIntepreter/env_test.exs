@@ -78,4 +78,13 @@ defmodule EnvTest do
   test "closure trying to find unbound vars should return error" do
     assert Env.closure([:x], [{:y, :b}]) == :error
   end
+
+  #@tag :pending
+  test "apply argument to closure environment" do
+    assert Env.args([:y], [:b], [{:x, :a}]) == [{:y, :b}, {:x, :a}]
+  end
+  #@tag :pending
+  test "apply several arguments to closure environment" do
+    assert Env.args([:y, :z], [:b, :c], [{:x, :a}]) == [{:z, :c}, {:y, :b}, {:x, :a}]
+  end
 end

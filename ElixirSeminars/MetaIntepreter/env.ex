@@ -70,4 +70,14 @@ defmodule Env do
   def closure([], _, newenv) do
     newenv
   end
+
+  # Binding arguments via parameters (for function application)
+  # args ( parameterlist, structurelist, env )
+  def args([],[], env) do
+    env
+  end
+  def args([par1 | parrest], [struct1 | structrest], env) do
+    env = [{par1, struct1} | env]
+    args(parrest, structrest, env)
+  end
 end
