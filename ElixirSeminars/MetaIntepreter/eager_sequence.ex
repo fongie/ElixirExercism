@@ -17,6 +17,7 @@ defmodule EagerSequence do
     eval_seq(sequence, [])
   end
 
+  # Without named functions
   def eval_seq([expression], env) do
     EagerExpression.eval_expr(expression, env)
   end
@@ -43,6 +44,32 @@ defmodule EagerSequence do
     end
   end
 
+  # With named functions
+  def eval_seq([expression], env, programs) do
+    EagerExpression.eval_expr(expression, env)
+  end
+  def eval_seq([{:match, pattern, exp}| rest], env, programs) do
+    case EagerExpression.eval_expr(exp, env) do
+      {:ok, struct} ->
+        vars = extract_vars(pattern)
+        env = Env.remove(vars, env)
+        case EagerMatch.eval_match(pattern, struct, env) do
+          :fail ->
+            :error
+          {:ok, env} ->
+            eval_seq(rest, env)
+        end
+      {struct1, struct2} ->
+        vars = extract_vars(pattern)
+        env = Env.remove(vars, env)
+        case EagerMatch.eval_match(pattern, {struct1, struct2}, env) do
+          :fail ->
+            :error
+          {:ok, env} ->
+            eval_seq(rest, env)
+        end
+    end
+  end
   # Extract vars from pattern (to later remove from env, making rebinding possible)
   def extract_vars({:var, id}) do
     [id]

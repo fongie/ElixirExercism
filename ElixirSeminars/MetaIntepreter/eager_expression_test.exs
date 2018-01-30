@@ -21,7 +21,7 @@ defmodule EagerExpressionTest do
 
   #@tag :pending
   test "structure with a variable evaluates to what the variable is bound to in env" do
-    assert EagerExpression.eval_expr({:cons, {:var, :x}, {:atm, :b}}, [{:x, :a}]) == {:a, :b}
+    assert EagerExpression.eval_expr({:cons, {:var, :x}, {:atm, :b}}, [{:x, :a}]) == {:ok, {:a, :b}}
   end
 
   #@tag :pending
@@ -41,6 +41,33 @@ defmodule EagerExpressionTest do
 
   #@tag :pending
   test "lambda function example from instructions" do
-    assert EagerSequence.eval([{:match, {:var, :x}, {:atm, :a}}, {:match, {:var, :f}, {:lambda, [:y], [:x], [{:cons, {:var, :x}, {:var, :y}}]}}, {:apply, {:var, :f}, [{:atm, :b}]}]) == {:a, :b}
+    assert EagerSequence.eval([{:match, {:var, :x}, {:atm, :a}}, {:match, {:var, :f}, {:lambda, [:y], [:x], [{:cons, {:var, :x}, {:var, :y}}]}}, {:apply, {:var, :f}, [{:atm, :b}]}]) == {:ok, {:a, :b}}
+  end
+
+  #@tag :pending
+  test "evaluate list of expressions, return list of structures" do
+    assert EagerExpression.eval_expr([{:var, :x}, {:var, :y}], [{:x, :a}, {:y, :b}, {:z, :c}]) == [:a, :b]
+  end
+
+  @tag :pending
+  test "named function example from instructions" do
+    prgm = [{:append, [:x, :y],
+      [{:case, {:var, :x},
+      [{:clause, {:atm, []}, [{:var, :y}]},
+       {:clause, {:cons, {:var, :hd}, {:var, :tl}},
+         [{:cons,
+           {:var, :hd},
+           {:call, :append, [{:var, :tl}, {:var, :y}]}}]
+       }]
+      }]
+    }]
+
+    seq = [{:match, {:var, :x},
+      {:cons, {:atm, :a}, {:cons, {:atm, :b}, {:atm, []}}}},
+           {:match, {:var, :y},
+             {:cons, {:atm, :c}, {:cons, {:atm, :d}, {:atm, []}}}},
+           {:call, :append, [{:var, :x}, {:var, :y}]}
+    ]
+            assert EagerSequence.eval_seq(seq, [], prgm) == {:ok, {:a, :b, {:c, {:d, nil}}}}
   end
 end
