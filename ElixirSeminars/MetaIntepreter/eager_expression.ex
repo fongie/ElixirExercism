@@ -45,17 +45,18 @@ defmodule EagerExpression do
     end
   end
 
-  def eval_expr({:apply, expr, args}, env) do
+  def eval_expr({:apply, expr, [args]}, env) do
     case eval_expr(expr, env) do
       :error ->
         :error
       {:ok, {:closure, par, seq, closureenv}} ->
-        case eval_expr(args) do #only can handle 1 arg right now?
+        case eval_expr(args, env) do #only can handle 1 arg right now?
           :error ->
             :error
-          structures ->
-            env = Env.args(par, structures, closureenv)
-            eval_seq(seq, env)
+          {:ok, structure} ->
+            env = Env.args(par, [structure], closureenv)
+            EagerSequence.eval_seq(seq, env)
+        end
     end
   end
 
@@ -69,9 +70,7 @@ defmodule EagerExpression do
         EagerSequence.eval_seq(sequence, env)
     end
   end
-
   def eval_clause([], _, _) do
     :error
   end
-
 end
