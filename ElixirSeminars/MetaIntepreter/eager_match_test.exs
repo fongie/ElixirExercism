@@ -7,7 +7,7 @@ defmodule EagerMatchTest do
 
   #@tag :pending
   test "matching existing atom" do
-    assert EagerMatch.eval_match({:atm, :a}, :a, []) == []
+    assert EagerMatch.eval_match({:atm, :a}, :a, []) == {:ok, []}
   end
 
   # @tag :pending

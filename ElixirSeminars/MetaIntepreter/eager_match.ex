@@ -4,7 +4,7 @@ defmodule EagerMatch do
   """
 
   def eval_match({:atm, id}, id, env) do
-    env
+    {:ok, env}
   end
   def eval_match({:var, id}, {a1,a2}, env) do #needed this to evaluate sequence when an exp was already evaluated to {:a,:b}, not with {:cons}
     case Env.find_in_env(id, env) do
