@@ -14,6 +14,9 @@ defmodule EagerExpression do
             :error
           structure ->
             env = Env.args(parameters, structure, env)
+            IO.inspect EagerSequence.eval_seq(sequence, env, programs)
+            IO.inspect sequence
+            #TODO ERROR COMES FROM HERE!!! CHECK SEQUENCE
             EagerSequence.eval_seq(sequence, env, programs)
         end
     end
@@ -28,17 +31,12 @@ defmodule EagerExpression do
   end
 
   def eval_expr({:cons, expr1, expr2}, env, programs) do
-    IO.inspect expr1
-    IO.inspect expr2
     case eval_expr(expr1, env, programs) do
       :error ->
         :error
       {:ok, id1} ->
-        IO.inspect env
-        IO.inspect eval_expr(expr2, env, programs)
         case eval_expr(expr2, env, programs) do
           :error ->
-            IO.puts "HI THERE"
             :error
           {:ok, id2} ->
             {:ok, {id1, id2}}
