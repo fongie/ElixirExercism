@@ -36,6 +36,16 @@ defmodule EagerExpression do
     end
   end
 
+  def eval_expr({:lambda, parameters, freevars, sequence}, env) do
+    case Env.closure(freevars, env) do
+      :error ->
+        :error
+      closure_environment ->
+        {:ok, {:closure, parameters, sequence, closure_environment}}
+    end
+  end
+
+  # Case clauses
   def eval_clause([{:clause, pattern, sequence} | rest], structure, env) do
 
     case EagerMatch.eval_match(pattern, structure, env) do

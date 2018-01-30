@@ -30,9 +30,4 @@ defmodule EagerSequenceTest do
                            {:var, :z}]) == {:ok, :b}
   end
 
-  @tag :pending
-  test "lambda function example from instructions" do
-    assert EagerSequence.eval([{:match, {:var, :x}, {:atm, :a}}, {:match, {:var, :f}, {:lambda, [:y], [:x], [{:cons, {:var, :x}, {:var, :y}}]}}, {:apply, {:var, :f}, [{:atm, :b}]}]) == :WHAT?
-  end
-
 end

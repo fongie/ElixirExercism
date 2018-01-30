@@ -33,4 +33,15 @@ defmodule EagerExpressionTest do
   test "evaluate instructions sample case clause" do
     assert EagerSequence.eval([{:match, {:var, :x}, {:atm, :a}}, {:case, {:var, :x}, [{:clause, {:atm, :b}, [{:atm, :ops}]}, {:clause, {:atm, :a}, [{:atm, :yes}]} ]} ]) == {:ok, :yes}
   end
+
+  #@tag :pending
+  test "eval simple closure" do
+    assert EagerExpression.eval_expr({:lambda, [:y], [:x], [{:cons, {:var, :x}, {:var, :y}}]}, [{:x, :a}]) == {:ok, {:closure, [:y], [{:cons, {:var, :x}, {:var, :y}}], [{:x, :a}]}}
+  end
+
+  @tag :pending
+  test "lambda function example from instructions" do
+    assert EagerSequence.eval([{:match, {:var, :x}, {:atm, :a}}, {:match, {:var, :f}, {:lambda, [:y], [:x], [{:cons, {:var, :x}, {:var, :y}}]}}, {:apply, {:var, :f}, [{:atm, :b}]}]) == {:a, :b}
+  end
+
 end

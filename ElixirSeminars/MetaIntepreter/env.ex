@@ -53,4 +53,21 @@ defmodule Env do
     newenv
   end
 
+  # Closure returns an environment with only the bindings of the free variables
+  def closure(vars, env) do
+    closure(vars, env, [])
+  end
+  def closure([var1 | rest], env, newenv) do
+    #[lookup(var1, env) | closure(rest, env)]
+    s = lookup(var1, env)
+    case s do
+      nil ->
+        :error
+      _ ->
+        closure(rest, env, [s | newenv])
+    end
+  end
+  def closure([], _, newenv) do
+    newenv
+  end
 end

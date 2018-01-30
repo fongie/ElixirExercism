@@ -63,4 +63,19 @@ defmodule EnvTest do
   test "env test from instructions" do
     assert Env.lookup(:foo, Env.add(:foo, 42, Env.new())) == {:foo, 42}
   end
+
+  #@tag :pending
+  test "simple closure" do
+    assert Env.closure([:x], [{:x, :a}]) == [{:x, :a}]
+  end
+
+  #@tag :pending
+  test "closure over bigger env" do
+    assert Env.closure([:x, :y], [{:x, :a}, {:y, :b}, {:z, :c}]) == [{:y, :b},{:x, :a}]
+  end
+
+  #@tag :pending
+  test "closure trying to find unbound vars should return error" do
+    assert Env.closure([:x], [{:y, :b}]) == :error
+  end
 end
