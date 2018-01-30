@@ -4,6 +4,17 @@ ExUnit.configure exclude: :pending, trace: true
 
 defmodule EagerExpressionTest do
   use ExUnit.Case
+
+    @prgm  [{:append, [:x, :y],
+      [{:case, {:var, :x},
+      [{:clause, {:atm, []}, [{:var, :y}]},
+       {:clause, {:cons, {:var, :hd}, {:var, :tl}},
+         [{:cons,
+           {:var, :hd},
+           {:call, :append, [{:var, :tl}, {:var, :y}]}}]
+       }]
+      }]
+    }]
   #@tag :pending
   test "evaluate in empty env" do
     assert EagerExpression.eval_expr({:atm, :a},[]) == {:ok, :a}
@@ -49,18 +60,13 @@ defmodule EagerExpressionTest do
     assert EagerExpression.eval_expr([{:var, :x}, {:var, :y}], [{:x, :a}, {:y, :b}, {:z, :c}]) == [:a, :b]
   end
 
+  # @tag :pending
+  test "evaluate first recursion call in sample program" do
+    assert EagerExpression.eval_expr({:call, :append, [{:var, :tl}, {:var, :y}]}, [{:tl, {:b, []}}, {:hd, :a}, {:y, {:c, {:d, []}}}, {:x, {:a, {:b, []}}}], @prgm) == "h"
+  end
+
   @tag :pending
   test "named function example from instructions" do
-    prgm = [{:append, [:x, :y],
-      [{:case, {:var, :x},
-      [{:clause, {:atm, []}, [{:var, :y}]},
-       {:clause, {:cons, {:var, :hd}, {:var, :tl}},
-         [{:cons,
-           {:var, :hd},
-           {:call, :append, [{:var, :tl}, {:var, :y}]}}]
-       }]
-      }]
-    }]
 
     seq = [{:match, {:var, :x},
       {:cons, {:atm, :a}, {:cons, {:atm, :b}, {:atm, []}}}},
@@ -68,6 +74,6 @@ defmodule EagerExpressionTest do
              {:cons, {:atm, :c}, {:cons, {:atm, :d}, {:atm, []}}}},
            {:call, :append, [{:var, :x}, {:var, :y}]}
     ]
-            assert EagerSequence.eval_seq(seq, [], prgm) == {:ok, {:a, :b, {:c, {:d, nil}}}}
+            assert EagerSequence.eval_seq(seq, [], @prgm) == {:ok, {:a, :b, {:c, {:d, nil}}}}
   end
 end
