@@ -19,11 +19,11 @@ defmodule EagerExpression do
     end
   end
 
-  def eval_expr({:atm, id}, _, programs) do
+  def eval_expr({:atm, id}, _, _) do
     {:ok, id}
   end
 
-  def eval_expr({:var, id}, env, programs) do
+  def eval_expr({:var, id}, env, _) do
     Env.find_in_env(id,env)
   end
 
@@ -52,7 +52,7 @@ defmodule EagerExpression do
     end
   end
 
-  def eval_expr({:lambda, parameters, freevars, sequence}, env, programs) do
+  def eval_expr({:lambda, parameters, freevars, sequence}, env, _) do
     case Env.closure(freevars, env) do
       :error ->
         :error
@@ -86,7 +86,7 @@ defmodule EagerExpression do
     end
   end
 
-  def eval_expr([], _, programs) do
+  def eval_expr([], _, _) do
     []
   end
 
@@ -101,7 +101,7 @@ defmodule EagerExpression do
         EagerSequence.eval_seq(sequence, env, programs)
     end
   end
-  def eval_clause([], _, _, programs) do
+  def eval_clause([], _, _, _) do
     :error
   end
 

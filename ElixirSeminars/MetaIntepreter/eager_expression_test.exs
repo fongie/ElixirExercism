@@ -62,10 +62,10 @@ defmodule EagerExpressionTest do
 
   # @tag :pending
   test "evaluate first recursion call in sample program" do
-    assert EagerExpression.eval_expr({:call, :append, [{:var, :tl}, {:var, :y}]}, [{:tl, {:b, []}}, {:hd, :a}, {:y, {:c, {:d, []}}}, {:x, {:a, {:b, []}}}], @prgm) == "h"
+    assert EagerExpression.eval_expr({:call, :append, [{:var, :tl}, {:var, :y}]}, [{:tl, {:b, []}}, {:hd, :a}, {:y, {:c, {:d, []}}}, {:x, {:a, {:b, []}}}], @prgm) == {:ok, {:b, {:c, {:d, []}}}}
   end
 
-  @tag :pending
+  #@tag :pending
   test "named function example from instructions" do
 
     seq = [{:match, {:var, :x},
@@ -74,6 +74,6 @@ defmodule EagerExpressionTest do
              {:cons, {:atm, :c}, {:cons, {:atm, :d}, {:atm, []}}}},
            {:call, :append, [{:var, :x}, {:var, :y}]}
     ]
-            assert EagerSequence.eval_seq(seq, [], @prgm) == {:ok, {:a, :b, {:c, {:d, nil}}}}
+            assert EagerSequence.eval_seq(seq, [], @prgm) == {:ok, {:a, {:b, {:c, {:d, []}}}}}
   end
 end
