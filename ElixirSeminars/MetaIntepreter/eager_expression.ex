@@ -14,9 +14,6 @@ defmodule EagerExpression do
             :error
           structure ->
             env = Env.args(parameters, structure, env)
-            IO.inspect EagerSequence.eval_seq(sequence, env, programs)
-            IO.inspect sequence
-            #TODO ERROR COMES FROM HERE!!! CHECK SEQUENCE
             EagerSequence.eval_seq(sequence, env, programs)
         end
     end
@@ -93,10 +90,10 @@ defmodule EagerExpression do
     []
   end
 
-
   # Case clauses
   def eval_clause([{:clause, pattern, sequence} | rest], structure, env, programs) do
-
+    vars = EagerSequence.extract_vars(pattern)
+    env = Env.remove(vars, env)
     case EagerMatch.eval_match(pattern, structure, env) do
       :fail ->
         eval_clause(rest, structure, env, programs)
