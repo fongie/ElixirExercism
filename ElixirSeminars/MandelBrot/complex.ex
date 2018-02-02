@@ -25,4 +25,8 @@ defmodule Complex do
   def abs({r, im}) do
     :math.sqrt(r*r + im*im)
   end
+
+  def abs(_) do
+    :error
+  end
 end
