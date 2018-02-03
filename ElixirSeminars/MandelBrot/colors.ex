@@ -1,5 +1,6 @@
 defmodule Colors do
 
+  # Converts a depth to a rgb color
   def convert(depth, max) do
     frac = depth / max
     a = frac*4

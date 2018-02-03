@@ -1,4 +1,4 @@
-defmodule Test do
+defmodule Print do
 
   def demo() do
     small(-2.6, 1.2, 1.2)
@@ -13,6 +13,7 @@ defmodule Test do
     PPM.write("small.ppm", image)
   end
 
+  #test only printout to io out
   def test() do
     x0 = -2.6
     y0 = 1.2
@@ -23,8 +24,6 @@ defmodule Test do
     k = (xn-x0) / width
     image = Mandel.mandelbrot(width,height,x0,y0,k,depth)
   end
-
 end
 
-# IO.inspect Enum.at(Test.test(), 5)
-# IO.inspect Test.test(), width: 0
+Print.demo()

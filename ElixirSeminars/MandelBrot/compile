@@ -2,4 +2,4 @@ elixirc complex.ex
 elixirc brot.ex
 elixirc colors.ex
 elixirc mandel.ex
-elixirc test.ex
+elixirc ppm.ex
