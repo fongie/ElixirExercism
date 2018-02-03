@@ -12,10 +12,10 @@ defmodule Mandel do
 
   # Creates "height" number of rows
   def rows(width, height, func, depth, acc) do
-    rows(0,0,height,func,depth,[])
+    rows(width,0,height,func,depth,[])
   end
   def rows(width, height, maxheight, func, depth, acc) when height <= maxheight do
-    newrow = row(0,0,width,func,depth,[])
+    newrow = row(0,height,width,func,depth,[])
     rows(width, height+1, maxheight, func, depth, [newrow | acc])
   end
   def rows(width, height, maxheight, func, depth, acc) do
@@ -27,6 +27,7 @@ defmodule Mandel do
     generatedNumber = func.(currentwidth,height)
     depthOfThis = Brot.mandelbrot(generatedNumber, depth)
     color = Colors.convert(depthOfThis, depth)
+    # IO.inspect acc, label: "row in mid"
     row(currentwidth+1, height, maxwidth, func, depth, [color | acc])
   end
   def row(currentwidth, height, maxwidth, func, depth, acc) do

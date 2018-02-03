@@ -2,6 +2,8 @@ defmodule Brot do
   @doc """
   Makes the mandelbrot calculations. We set our bound (for which Z is not allowed to go larger than) at 2
   """
+
+  # Calculates... depth? I think?!?!
   def mandelbrot(complex, iterations) do
     z0 = Complex.new(0,0)
     i = 0
