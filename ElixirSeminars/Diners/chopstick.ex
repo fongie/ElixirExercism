@@ -4,6 +4,15 @@ defmodule Chopstick do
   Interface to the philosophers
   """
 
+  def request(stick, timeout) do
+    send(stick, {:request, self()})
+    receive do
+      :ok -> :ok
+    after timeout ->
+      :no
+    end
+  end
+
   def request(stick) do
     send(stick, {:request, self()})
     receive do
