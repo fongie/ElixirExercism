@@ -17,13 +17,15 @@ defmodule Chopstick do
   end
 
   def terminate(stick) do
-    Process.exit(self(), "terminated from above")
+    IO.puts "Terminating."
+    Process.exit(stick, :normal)
   end
 
-  def start do
+  def start() do
     stick = spawn_link(fn -> available() end)
   end
 
+  # Internals
   defp available() do
     receive do
       {:request, from}  ->
