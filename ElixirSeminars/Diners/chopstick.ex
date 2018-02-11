@@ -1,5 +1,12 @@
 defmodule Chopstick do
 
+  def request(stick) do
+    send(stick, {:request, self()})
+    receive do
+      :ok -> :ok
+    end
+  end
+
   def start do
     stick = spawn_link(fn -> available() end)
   end
@@ -7,8 +14,7 @@ defmodule Chopstick do
   def available() do
     receive do
       {:request, from}  ->
-        IO.puts "GOING TO GONE MSG FROM"
-        IO.inspect from
+        send(from, :ok)
         gone()
       :quit ->
         :ok
@@ -16,10 +22,8 @@ defmodule Chopstick do
   end
 
   def gone() do
-    raise "fault"
     receive do
       :return ->
-        IO.puts "GOING BACK TO AVAILABLE"
         available()
       :quit -> :ok
     end
