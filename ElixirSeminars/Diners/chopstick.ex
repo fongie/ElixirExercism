@@ -1,5 +1,9 @@
 defmodule Chopstick do
 
+  @doc """
+  Interface to the philosophers
+  """
+
   def request(stick) do
     send(stick, {:request, self()})
     receive do
@@ -7,11 +11,20 @@ defmodule Chopstick do
     end
   end
 
+  def return(stick) do
+    send(stick, :return)
+    :ok
+  end
+
+  def terminate(stick) do
+    Process.exit(self(), "terminated from above")
+  end
+
   def start do
     stick = spawn_link(fn -> available() end)
   end
 
-  def available() do
+  defp available() do
     receive do
       {:request, from}  ->
         send(from, :ok)
@@ -21,7 +34,7 @@ defmodule Chopstick do
     end
   end
 
-  def gone() do
+  defp gone() do
     receive do
       :return ->
         available()
