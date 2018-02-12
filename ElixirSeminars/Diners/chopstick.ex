@@ -26,7 +26,6 @@ defmodule Chopstick do
   end
 
   def terminate(stick) do
-    IO.puts "Terminating."
     Process.exit(stick, :normal)
   end
 

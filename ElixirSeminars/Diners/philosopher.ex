@@ -20,17 +20,22 @@ defmodule Philosopher do
 
   def waiting(name, leftstick, rightstick) do
     IO.puts "#{name} is requesting left chopstick"
-    case Chopstick.request(leftstick) do
-      :no -> 
+    case Chopstick.request(leftstick, 1000) do
+      :no ->
+        # IO.puts "#{name} did not get his left stick... but will try again!"
         waiting(name, leftstick, rightstick)
       :ok ->
-        # TODO IM HERE, GO ON TO RIGHT STICK
-        
-
+      IO.puts "#{name} is requesting right chopstick"
+      case Chopstick.request(rightstick, 1000) do
+        :no ->
+          # IO.puts "#{name} is returning left chopstick because right one was taken, and trying again!"
+          Chopstick.return(leftstick)
+          waiting(name, leftstick, rightstick)
+        :ok ->
+          true
+      end
     end
 
-    IO.puts "#{name} is requesting right chopstick"
-    Chopstick.request(rightstick)
   end
 
   def eat(name, hunger, left, right) do
