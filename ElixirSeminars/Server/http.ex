@@ -1,5 +1,13 @@
 defmodule HTTP do
 
+  def ok(body) do
+    "HTTP/1.1 200 OK\r\n\r\n #{body}"
+  end
+
+  def get(uri) do
+    "GET #{uri} HTTP/1.1\r\n\r\n"
+  end
+
   def parse_request(r0) do
     {request, r1} = request_line(r0)
     {headers, r2} = headers(r1)
@@ -36,7 +44,7 @@ defmodule HTTP do
   end
 
   def headers(r0) do
-    IO.inspect r0
+    IO.inspect r0 #NÅT GÅR FEL HÄR
     {header, r1} = header(r0)
     {rest, r2} = headers(r1)
     {[header | rest], r2}
